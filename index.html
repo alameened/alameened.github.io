@@ -1578,9 +1578,10 @@ footer {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  z-index: 0;
-  opacity: 0.15;
+  z-index: -1;
+  opacity: 0.6;
   pointer-events: none;
+  filter: blur(2px) brightness(0.8);
 }
 </style>
 </head>
@@ -1595,7 +1596,6 @@ footer {
     <span class="loader-dot"></span>
   </div>
 </div>
-<div class="ambient-bg" aria-hidden="true"></div>
 <div class="site">
   <header class="site-header">
     <div class="header-inner">
