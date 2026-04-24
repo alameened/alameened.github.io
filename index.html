@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Alameen Studios | Professional Video Editing Services</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@600;700;800;900&display=swap" rel="stylesheet">
@@ -937,12 +936,12 @@ footer {
       <div class="header-tools">
         <form class="search-wrap" id="siteSearch">
           <i data-lucide="search"></i>
-          <input type="search" id="searchInput" placeholder="Search services...">
+          <input type="search" id="searchInput" placeholder="Search services..." aria-label="Search">
         </form>
-        <a class="social-icon" href="https://www.instagram.com/alameened" target="_blank">
-  <i class="fa-brands fa-instagram"></i>
-</a>
-        <button class="menu-toggle" id="menuToggle"><i data-lucide="menu"></i></button>
+        <a class="social-icon" href="https://www.instagram.com/alameened" target="_blank" aria-label="Instagram">
+          <i data-lucide="instagram"></i>
+        </a>
+        <button class="menu-toggle" id="menuToggle" aria-label="Open Menu"><i data-lucide="menu"></i></button>
       </div>
     </div>
   </header>
@@ -1133,6 +1132,7 @@ footer {
             </div>
             <textarea name="message" placeholder="Describe your project vision..." rows="6" required></textarea>
             <button type="submit" class="btn primary"><i data-lucide="send"></i> Send Request</button>
+            <div id="formStatus" style="display: none; padding: 15px; border-radius: 12px; margin-top: 15px; font-weight: 600; text-align: center; color: var(--green); background: rgba(99, 226, 122, 0.1); border: 1px solid var(--green);"></div>
           </form>
         </div>
       </div>
@@ -1143,21 +1143,20 @@ footer {
     <div class="container footer-inner">
       <p>&copy; 2026 Alameen Studios. Crafted for Precision.</p>
       <div class="footer-social">
-       <a class="social-icon" href="https://www.instagram.com/alameened" target="_blank">
-  <i class="fa-brands fa-instagram"></i>
-</a>
-
-<a class="social-icon" href="https://www.youtube.com/@alameened" target="_blank">
-  <i class="fa-brands fa-youtube"></i>
-</a>
-        <a class="social-icon" href="#"><i data-lucide="mail"></i></a>
+        <a class="social-icon" href="https://www.instagram.com/alameened" target="_blank" aria-label="Instagram">
+          <i data-lucide="instagram"></i>
+        </a>
+        <a class="social-icon" href="https://www.youtube.com/@alameened" target="_blank" aria-label="YouTube">
+          <i data-lucide="youtube"></i>
+        </a>
+        <a class="social-icon" href="mailto:alameened.business@gmail.com" aria-label="Email"><i data-lucide="mail"></i></a>
       </div>
     </div>
   </footer>
 </div>
 
 <div class="video-modal" id="videoModal">
-  <button class="modal-close" id="modalClose"><i data-lucide="x"></i></button>
+  <button class="modal-close" id="modalClose" aria-label="Close Video"><i data-lucide="x"></i></button>
   <video id="fullVideo" controls playsinline></video>
 </div>
 
@@ -1211,13 +1210,19 @@ footer {
     });
   });
 
+  // Mobile Menu Fix
   const menuToggle = document.getElementById("menuToggle");
   const nav = document.getElementById("primaryNav");
   menuToggle.addEventListener("click", () => {
     nav.classList.toggle("active");
   });
 
-  
+  const navLinks = document.querySelectorAll(".primary-nav a");
+  navLinks.forEach(link => {
+    link.addEventListener("click", () => {
+      nav.classList.remove("active");
+    });
+  });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
@@ -1228,14 +1233,37 @@ footer {
 
 document.getElementById("contactForm").addEventListener("submit", function(e) {
   e.preventDefault();
+  
+  const btn = this.querySelector('button[type="submit"]');
+  const originalText = btn.innerHTML;
+  btn.innerHTML = '<i data-lucide="loader" class="fa-spin"></i> Sending...';
+  lucide.createIcons(); // Refresh icon for loader
 
   emailjs.sendForm("service_w03vxqd", "template_9hg0s53", this)
-    .then(function() {
-  alert("Message sent successfully!");
-  document.getElementById("contactForm").reset();
-}, function(error) {
-  alert("Error: " + JSON.stringify(error));
-});
+    .then(() => {
+      const status = document.getElementById("formStatus");
+      status.style.display = "block";
+      status.style.color = "var(--green)";
+      status.style.backgroundColor = "rgba(99, 226, 122, 0.1)";
+      status.style.borderColor = "var(--green)";
+      status.innerText = "Message sent successfully!";
+      
+      document.getElementById("contactForm").reset();
+      btn.innerHTML = originalText;
+      lucide.createIcons(); // Refresh original icon
+      
+      setTimeout(() => status.style.display = "none", 4000);
+    }, (error) => {
+      const status = document.getElementById("formStatus");
+      status.style.display = "block";
+      status.style.color = "#ff4a4a";
+      status.style.backgroundColor = "rgba(255, 74, 74, 0.1)";
+      status.style.borderColor = "rgba(255, 74, 74, 0.3)";
+      status.innerText = "Error: " + JSON.stringify(error);
+      
+      btn.innerHTML = originalText;
+      lucide.createIcons();
+    });
 });
 </script>
 </body>
